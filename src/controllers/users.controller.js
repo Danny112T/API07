@@ -94,13 +94,13 @@ exports.addUser = async (req, res) => {
         });
       } else {
         const salt = await bcrypt.genSalt(10);
-        EncryptPass = await bcrypt.hash(password, salt);
+        password = await bcrypt.hash(password, salt);
         const newUser = await User.create({
           name,
           lastname,
           user,
           email,
-          EncryptPass,
+          password,
         });
         if (newUser) {
           res.status(201).json({
