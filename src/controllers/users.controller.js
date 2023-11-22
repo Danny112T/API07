@@ -69,13 +69,13 @@ exports.getUserByEmail = async (req, res) => {
 
 exports.addUser = async (req, res) => {
   try {
-    const { name, lastname, user, email, password } = req.body;
+    const { name, lastname, user, email, svpassword } = req.body;
     if (
       name == undefined ||
       lastname == undefined ||
       user == undefined ||
       email == undefined ||
-      password == undefined
+      svpassword == undefined
     ) {
       res.status(400).json({
         estado: 0,
@@ -94,7 +94,7 @@ exports.addUser = async (req, res) => {
         });
       } else {
         const salt = await bcrypt.genSalt(10);
-        password = await bcrypt.hash(password, salt);
+        password = await bcrypt.hash(svpassword, salt);
         const newUser = await User.create({
           name,
           lastname,
