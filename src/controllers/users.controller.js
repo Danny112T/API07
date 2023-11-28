@@ -14,6 +14,7 @@ exports.getAllUsers = async (req, res) => {
       res.status(404).json({
         estado: 0,
         mensaje: "Usuarios no encontrados",
+        data: [],
       });
     }
     const totalDePaginas = Math.ceil(total / limit);
@@ -29,7 +30,7 @@ exports.getAllUsers = async (req, res) => {
     console.log(error);
     res
       .status(500)
-      .json({ estado: 0, mensaje: "Ocurrio un error desconocido" });
+      .json({ estado: 0, mensaje: "Ocurrio un error desconocido", data: [] });
   }
 };
 
@@ -40,7 +41,7 @@ exports.getUserByEmail = async (req, res) => {
       return res.status(400).json({
         estado: 0,
         mensaje: "Falta el email",
-        datos: null,
+        data: [],
       });
     } else {
       const usuario = await User.findOne({ email: email }).exec();
@@ -48,13 +49,13 @@ exports.getUserByEmail = async (req, res) => {
         res.status(404).json({
           estado: 0,
           mensaje: "Usuario no encontrado",
-          data: null,
+          data: [],
         });
       } else {
         res.status(200).json({
           estado: 1,
           mensaje: "Usuario obtenido correctamente",
-          data: usuario,
+          data: [usuario],
         });
       }
     }
@@ -63,6 +64,7 @@ exports.getUserByEmail = async (req, res) => {
     res.status(500).json({
       estado: 0,
       mensaje: "Ocurrio un error desconocido",
+      data: [],
     });
   }
 };
@@ -80,7 +82,7 @@ exports.addUser = async (req, res) => {
       res.status(400).json({
         estado: 0,
         mensaje: "Faltan datos",
-        datos: null,
+        data: [],
       });
     } else {
       const existingUser = await User.findOne({
@@ -90,7 +92,7 @@ exports.addUser = async (req, res) => {
         res.status(400).json({
           estado: 0,
           mensaje: "Usuario o correo ya existente",
-          datos: null,
+          data: [],
         });
       } else {
         const salt = await bcrypt.genSalt(10);
@@ -106,13 +108,13 @@ exports.addUser = async (req, res) => {
           res.status(201).json({
             estado: 1,
             mensaje: "Usuario creado correctamente",
-            datos: newUser,
+            data: [newUser],
           });
         } else {
           res.status(500).json({
             estado: 0,
             mensaje: "Error al crear el usuario",
-            datos: null,
+            data: [],
           });
         }
       }
@@ -121,7 +123,7 @@ exports.addUser = async (req, res) => {
     res.status(400).json({
       estado: 0,
       mensaje: "Ocurrio un error desconocido",
-      datos: null,
+      data: null,
     });
     console.log(error);
   }
@@ -137,7 +139,7 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({
         estado: 0,
         mensaje: "No se encontró un usuario con ese correo electrónico",
-        datos: null,
+        data: [],
       });
     }
 
@@ -156,13 +158,13 @@ exports.updateUser = async (req, res) => {
     res.status(200).json({
       estado: 1,
       mensaje: "Usuario actualizado correctamente",
-      datos: updatedUser,
+      data: [updatedUser],
     });
   } catch (error) {
     console.log(error);
     res
       .status(500)
-      .json({ estado: 0, mensaje: "Ocurrió un error desconocido" });
+      .json({ estado: 0, mensaje: "Ocurrió un error desconocido", data: [] });
   }
 };
 
@@ -173,7 +175,7 @@ exports.deleteUser = async (req, res) => {
       res.status(400).json({
         estado: 0,
         mensaje: "Falta el email",
-        datos: null,
+        data: [],
       });
     } else {
         const usuario = await User.findOne({ email: email }).exec();
@@ -181,14 +183,14 @@ exports.deleteUser = async (req, res) => {
           res.status(404).json({
             estado: 0,
             mensaje: "Usuario no encontrado",
-            data: null,
+            data: [],
           });
         } else {
             User.findOneAndDelete({ email: email }).exec();
             res.status(200).json({
                 estado: 1,
                 mensaje: "Usuario eliminado correctamente",
-                data: usuario,
+                data: [usuario],
             });
         }
     }
@@ -197,6 +199,7 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({
       estado: 0,
       mensaje: "Ocurrio un error desconocido",
+      data: [],
     });
   }
 };
